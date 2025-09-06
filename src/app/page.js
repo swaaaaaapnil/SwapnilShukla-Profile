@@ -3,6 +3,10 @@ import { getGithubProfile, getGithubRepos } from "./github";
 import SkillsCarousel from "./SkillsCarousel";
 import ProjectStack from "./ProjectStack";
 
+export const metadata = {
+  title: "Swapnil Shukla",
+};
+
 function getPinnedProjects(repos) {
   // Pin and rename specific projects
   const pins = [
