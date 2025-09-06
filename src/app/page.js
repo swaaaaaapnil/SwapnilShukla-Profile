@@ -6,6 +6,7 @@ import ProjectStack from "./ProjectStack";
 export const metadata = {
   title: "Swapnil Shukla",
 };
+export const dynamic = 'force-dynamic';
 
 function getPinnedProjects(repos) {
   // Pin and rename specific projects
@@ -91,8 +92,17 @@ const skills = [
 ];
 
 export default async function Home() {
-  const username = "swaaaaaapnil";
-  const profile = await getGithubProfile(username);
+  let profile = null;
+  try {
+    const username = process.env.GITHUB_USERNAME || 'swaaaaaapnil'; // CHANGED
+    profile = await getGithubProfile(username);                     // CHANGED
+  } catch (e) {
+    console.error('GitHub profile load failed', e);                  // CHANGED
+  }
+  const avatarUrl = profile
+    ? profile.avatar_url + (profile.avatar_url.includes('?') ? '&' : '?') +
+      'rev=' + new Date(profile.updated_at || Date.now()).getTime() // CHANGED (cache buster)
+    : '/avatar-fallback.png';                                       // CHANGED
 
   const socials = [
     { href: "https://drive.google.com/file/d/1_zAuVyyZVBwC1a-0V748u26O7x2b-U1u/view?usp=sharing", icon: "/cv.svg", label: "Download CV", color: "#06b6d4", download: true },
@@ -152,7 +162,7 @@ export default async function Home() {
                   style={{ backfaceVisibility: 'hidden' }}
                 >
                   <Image
-                    src={profile.avatar_url}
+                    src={avatarUrl}                                  // CHANGED
                     alt="Swapnil Shukla"
                     width={360}
                     height={360}
