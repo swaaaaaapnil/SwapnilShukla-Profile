@@ -91,6 +91,7 @@ export default async function Home() {
   const profile = await getGithubProfile(username);
 
   const socials = [
+    { href: "https://drive.google.com/file/d/1_zAuVyyZVBwC1a-0V748u26O7x2b-U1u/view?usp=sharing", icon: "/cv.svg", label: "Download CV", color: "#06b6d4", download: true },
     { href: "mailto:swapnilshukla470@gmail.com", icon: "/email.svg", label: "Email", color: "#a855f7" },
     { href: "https://github.com/swaaaaaapnil", icon: "/github.svg", label: "GitHub", color: "#6366f1" },
     { href: "https://www.linkedin.com/in/swapnil-shukla-2674a8269", icon: "/linkedin.svg", label: "LinkedIn", color: "#0A66C2" },
@@ -116,6 +117,7 @@ export default async function Home() {
                   href={s.href}
                   target={s.href.startsWith('http') ? "_blank" : undefined}
                   rel={s.href.startsWith('http') ? "noopener noreferrer" : undefined}
+                  download={s.download ? '' : undefined}
                   className="social-icon transform hover:scale-110 active:scale-95 transition-transform duration-200"
                   style={{ ['--brand-color']: s.color }}
                   title={s.label}
