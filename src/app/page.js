@@ -107,7 +107,7 @@ export default async function Home() {
               Swapnil Shukla
             </h1>
             <p className="text-[15px] sm:text-[17px] md:text-lg text-purple-200/95 max-w-2xl leading-relaxed mb-6 text-center md:text-left px-2 md:px-0">
-              B.Tech ICT student at Dhirubhai Ambani University | Web Developer | Data Analytics Enthusiast
+               Web Developer | Data Analytics Enthusiast
             </p>
             <nav aria-label="Social links" className="flex gap-3 md:gap-4 mt-2">
               {socials.map((s, i) => (
