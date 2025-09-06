@@ -27,8 +27,8 @@ export default function ProjectStack({ projects }) {
                         unoptimized
                       />
                     </div>
-                  ) : (proj.name === 'Finora' || proj.name === 'Skylynx' || proj.name === 'State' || proj.name === 'Stackholder' || (typeof proj.image === 'string' && (proj.image.toLowerCase().endsWith('state.png') || proj.image.toLowerCase().endsWith('stackholder.png')))) ? (
-                    <div className={"relative overflow-hidden " + ((proj.name === 'State' || proj.name === 'Stackholder' || (typeof proj.image === 'string' && (proj.image.toLowerCase().endsWith('state.png') || proj.image.toLowerCase().endsWith('stackholder.png')))) ? '': 'rounded-2xl') + " shadow-xl p-0"}>
+                  ) : (proj.name === 'Finora' || proj.name === 'Skylynx' || proj.name === 'state' || proj.name === 'Stackholder' || (typeof proj.image === 'string' && (proj.image.toLowerCase().endsWith('state.png') || proj.image.toLowerCase().endsWith('stackholder.png')))) ? (
+                    <div className={"relative overflow-hidden " + ((proj.name === 'state' || proj.name === 'Stackholder' || (typeof proj.image === 'string' && (proj.image.toLowerCase().endsWith('state.png') || proj.image.toLowerCase().endsWith('stackholder.png')))) ? '': 'rounded-2xl') + " shadow-xl p-0"}>
                       <Image src={proj.image} alt={proj.name} width={900} height={520} className="w-full object-contain" style={{ height: '420px' }} unoptimized />
                     </div>
                   ) : (
