@@ -106,7 +106,7 @@ export default async function Home() {
     : '/avatar-fallback.png';                                       // CHANGED
 
   const socials = [
-    { href: "https://drive.google.com/file/d/1_zAuVyyZVBwC1a-0V748u26O7x2b-U1u/view?usp=sharing", icon: "/cv.svg", label: "Download CV", color: "#06b6d4", download: true },
+    { href: "https://drive.google.com/file/d/165WTh-J6CBD8qszFxHgRfV5pCd861mGe/view?usp=sharing", icon: "/cv.svg", label: "Download CV", color: "#06b6d4", download: true },
     { href: "mailto:swapnilshukla470@gmail.com", icon: "/email.svg", label: "Email", color: "#a855f7" },
     { href: "https://github.com/swaaaaaapnil", icon: "/github.svg", label: "GitHub", color: "#6366f1" },
     { href: "https://www.linkedin.com/in/swapnil-shukla-2674a8269", icon: "/linkedin.svg", label: "LinkedIn", color: "#0A66C2" },
