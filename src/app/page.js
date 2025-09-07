@@ -178,7 +178,7 @@ export default async function Home() {
                     transform: 'rotateY(180deg)',
                   }}
                 >
-                  Software Developer &amp; Data Analyst
+                  Web Developer &amp; Data Analyst
                 </div>
               </div>
             </div>
