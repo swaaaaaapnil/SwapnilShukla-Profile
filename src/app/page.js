@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getGithubProfile, getGithubRepos } from "./github";
 import SkillsCarousel from "./SkillsCarousel";
 import ProjectStack from "./ProjectStack";
+import ContactForm from "./components/ContactForm"; // ADDED
 
 export const metadata = {
   title: "Swapnil Shukla",
@@ -239,6 +240,17 @@ export default async function Home() {
         {/* Large screen smooth piling animation */}
         <div className="hidden lg:block">
           <ProjectStack projects={mainProjects} />
+        </div>
+      </section>
+      {/* CONTACT SECTION */}
+      <section id="contact" className="w-full max-w-5xl mx-auto px-4 sm:px-6 pb-32 md:pb-40">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 text-center shine-gradient">Contact Me</h2>
+        <p className="text-purple-200/80 max-w-2xl mx-auto text-center mb-10 text-sm sm:text-base leading-relaxed">
+          Send a direct message.
+        </p>
+        <div className="relative bg-black/60 gradient-border backdrop-blur-2xl rounded-2xl p-6 sm:p-10 border border-white/10 shadow-xl">
+          <ContactForm />
+          <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-purple-500/10" />
         </div>
       </section>
     </div>

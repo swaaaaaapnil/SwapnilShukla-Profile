@@ -24,7 +24,7 @@ export default function SkillsCarousel() {
   // Tripling the array ensures enough content for seamless scroll and visibility
   return (
     <section className="w-full max-w-6xl px-4 py-16">
-      <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent mb-12 text-center">Technical Skills</h2>
+      <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent mb-12 text-center shine-gradient">Technical Skills</h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6">
         {skills.map((skill, i) => (
           <div 
