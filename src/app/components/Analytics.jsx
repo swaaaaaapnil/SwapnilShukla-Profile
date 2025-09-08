@@ -2,28 +2,27 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 
-export default function Analytics() {
+function AnalyticsTracking() {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Log once (remove later)
-  useEffect(() => {
-    if (GA_ID) console.log("GA loaded:", GA_ID);
-    else console.warn("GA_ID missing");
-  }, [GA_ID]);
-
-  // Track route changes
   useEffect(() => {
     if (!GA_ID) return;
-    const url = pathname + (searchParams.size ? `?${searchParams}` : "");
+    const url = pathname + (searchParams?.toString() ? `?${searchParams}` : "");
     window.gtag?.("config", GA_ID, {
       page_path: url,
       anonymize_ip: true
     });
   }, [GA_ID, pathname, searchParams]);
+
+  return null;
+}
+
+export default function Analytics() {
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
   if (!GA_ID) return null;
 
@@ -46,6 +45,9 @@ export default function Analytics() {
           });
         `}
       </Script>
+      <Suspense fallback={null}>
+        <AnalyticsTracking />
+      </Suspense>
     </>
   );
 }
