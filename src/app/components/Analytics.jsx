@@ -9,15 +9,16 @@ export default function Analytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Debug: remove after it works
+  // Log once (remove later)
   useEffect(() => {
-    console.log("Analytics mounted. GA_ID =", GA_ID);
+    if (GA_ID) console.log("GA loaded:", GA_ID);
+    else console.warn("GA_ID missing");
   }, [GA_ID]);
 
+  // Track route changes
   useEffect(() => {
     if (!GA_ID) return;
     const url = pathname + (searchParams.size ? `?${searchParams}` : "");
-    // Will run after scripts attach window.gtag
     window.gtag?.("config", GA_ID, {
       page_path: url,
       anonymize_ip: true
@@ -43,7 +44,6 @@ export default function Analytics() {
             anonymize_ip: true,
             page_path: window.location.pathname
           });
-          console.log('GA script loaded with ID ${GA_ID}');
         `}
       </Script>
     </>
