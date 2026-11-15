@@ -1,258 +1,291 @@
-import Image from "next/image";
-import { getGithubProfile, getGithubRepos } from "./github";
-import SkillsCarousel from "./SkillsCarousel";
-import ProjectStack from "./ProjectStack";
-import ContactForm from "./components/ContactForm"; // ADDED
+import Interactions from "./components/Interactions";
+import SandWordmark from "./components/SandWordmark";
+import ContactForm from "./components/ContactForm";
 
-export const metadata = {
-  title: "Swapnil Shukla",
-};
-export const dynamic = 'force-dynamic';
+const EMAIL = "swapnilshukla470@gmail.com";
+const GITHUB = "https://github.com/swaaaaaapnil";
+const LINKEDIN = "https://www.linkedin.com/in/swapnil--shukla/";
+const RESUME = "https://drive.google.com/file/d/1ix_odvRK7bSzrxeje-gBusr-4nX6MA3d/view?usp=sharing";
+const FINORA = "https://finora-phi.vercel.app";
+const SKYLYNX = "https://skylynx.vercel.app";
+const SKETCHPAD = "https://sketchpad-blond.vercel.app";
+const HABITQUEST =
+  "https://www.figma.com/proto/bC93EGAXwyHI1L9cNbhRD1/high-fidelity?node-id=1-1380&t=0Rl73OqCYYl3zVoY-1&starting-point-node-id=102%3A10281";
 
-function getPinnedProjects(repos) {
-  // Pin and rename specific projects
-  const pins = [
-    { name: "finora", display: "Finora" },
-    { name: "habitquest", display: "HabitQuest" },
-    { name: "flight-booking-system", display: "Skylynx" },
-  ];
-  const pinned = pins
-    .map(pin => {
-      const repo = repos.find(r => r.name.toLowerCase() === pin.name.toLowerCase());
-      if (repo) {
-        return { ...repo, name: pin.display };
-      }
-      return null;
-    })
-    .filter(Boolean);
-  // Remove pinned from repos
-  const rest = repos.filter(r => !pins.some(pin => r.name.toLowerCase() === pin.name.toLowerCase()));
-  return [...pinned, ...rest];
+const ext = { target: "_blank", rel: "noopener" };
+
+const experience = [
+  ["May 2026 —", "UnifyApps", "Forward deployed engineer. AI pipelines for 5+ enterprise clients in the UAE; invoice processing down to under 30 seconds, 40% faster end to end.", true],
+  ["Jan — May 2026", "Genpact", "Intern."],
+  ["May — Jun 2025", "DA-IICT", "Research intern. Approximation algorithms for geometric hitting sets."],
+  ["Dec 2023 — Jan 2024", "Maitri Manthan", "Intern."],
+  ["2022 — 2026", "DA-IICT, Gandhinagar", "B.Tech, Information and Communication Technology."],
+];
+
+const stack = [
+  ["Languages", "TypeScript, Python, C++, SQL"],
+  ["Web", "Next.js, React, Tailwind, Prisma, Supabase"],
+  ["AI", "LLM pipelines, document extraction, on-device speech"],
+  ["Infra", "Vercel, Inngest, Clerk, Arcjet"],
+];
+
+function Tags({ items }) {
+  return (
+    <div className="tags">
+      {items.map((t) => (
+        <span key={t}>{t}</span>
+      ))}
+    </div>
+  );
 }
 
-const mainProjects = [
-  {
-    name: "Finora",
-    description:
-      "Modern Finance Management Website. Built a full-stack finance app handling 500+ transactions with automated categorization. Secure authentication for 100+ test users. Integrated Gemini AI API for receipt parsing.",
-    tech: ["React.js", "Next.js", "Tailwind CSS", "Prisma", "Supabase", "Arcjet", "Inngest", "Gemini AI API"],
-    link: "https://finora-phi.vercel.app/",
-    image: "/Finora.png", // Public folder screenshot for Finora homepage
-  },
-  {
-    name: "HabitQuest",
-    description:
-      "Habit tracking and productivity platform. Gamified experience for building habits and tracking progress.",
-    tech: ["UI/UX", "Figma"],
-    link: "https://www.figma.com/proto/bC93EGAXwyHI1L9cNbhRD1/high-fidelity?node-id=1-1380&t=0Rl73OqCYYl3zVoY-1&starting-point-node-id=102%3A10281",
-    image: "/HabitQuest.png", // Public folder screenshot for HabitQuest homepage
-  },
-  {
-    name: "Skylynx",
-    description:
-      "Flight Booking System. Engineered a booking system supporting 1,000+ mock reservations, optimized backend API response, and designed a responsive UI.",
-    tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
-    link: "https://skylynx.vercel.app/",
-    image: "/Skylynx.png", // Public folder screenshot for Skylynx homepage
-  },
-  {
-    name: "India State Performance Dashboard",
-    description:
-      "Comprehensive interactive dashboard analyzing performance metrics across Indian states and territories. Dynamic filtering and drill-down analysis for state-wise comparison. Reduced manual analysis time by 60% through automated data preparation and visualization workflows.",
-    tech: ["Tableau", "Data Visualization", "Statistical Analysis"],
-    link: "https://tabsoft.co/4mRw9aJ",
-    image: "/state.png", // Screenshot for India State Performance Dashboard
-  },
-  {
-    name: "Stakeholder Insights and Performance Dashboard",
-    description:
-      "Executive dashboard consolidating 20+ KPIs for 5+ stakeholders. Interactive visuals for revenue, segmentation, and efficiency. Advanced calculated fields and parameters reduced manual reporting effort by 40 hours/month.",
-    tech: ["Tableau", "Business Analytics", "KPI Tracking"],
-    link: "https://tabsoft.co/4fI5M51",
-  image: "/Stackholder.png", // Screenshot for Stakeholder Insights Dashboard
-  },
-];
-
-const skills = [
-  { name: "C", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" },
-  { name: "C++", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" },
-  { name: "HTML", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
-  { name: "CSS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
-  { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-  { name: "Python", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-  { name: "SQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-  { name: "React.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-  { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
-  { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-  { name: "Tailwind CSS", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
-  { name: "Figma", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" },
-  { name: "Prisma", icon: "https://cdn.jsdelivr.net/npm/@prisma/icons@latest/svg/white.svg" },
-  { name: "Supabase", icon: "https://seeklogo.com/images/S/supabase-logo-DCC676FFE2-seeklogo.com.png" },
-  { name: "Git", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
-  { name: "Tableau", icon: "https://cdn.simpleicons.org/tableau/FFFFFF" }, // Use white Tableau icon from CDN
-];
-
-export default async function Home() {
-  let profile = null;
-  try {
-    const username = process.env.GITHUB_USERNAME || 'swaaaaaapnil'; // CHANGED
-    profile = await getGithubProfile(username);                     // CHANGED
-  } catch (e) {
-    console.error('GitHub profile load failed', e);                  // CHANGED
-  }
-  const avatarUrl = profile
-    ? profile.avatar_url + (profile.avatar_url.includes('?') ? '&' : '?') +
-      'rev=' + new Date(profile.updated_at || Date.now()).getTime() // CHANGED (cache buster)
-    : '/avatar-fallback.png';                                       // CHANGED
-
-  const socials = [
-    { href: "https://drive.google.com/file/d/1ix_odvRK7bSzrxeje-gBusr-4nX6MA3d/view?usp=sharing", icon: "/cv.svg", label: "Download CV", color: "#06b6d4", download: true },
-    { href: "mailto:swapnilshukla470@gmail.com", icon: "/email.svg", label: "Email", color: "#a855f7" },
-    { href: "https://github.com/swaaaaaapnil", icon: "/github.svg", label: "GitHub", color: "#6366f1" },
-    { href: "https://www.linkedin.com/in/swapnil-shukla-2674a8269", icon: "/linkedin.svg", label: "LinkedIn", color: "#0A66C2" },
-    { href: "https://public.tableau.com/app/profile/swapnil.shukla2935/vizzes", icon: "/tableau.svg", label: "Tableau", color: "#ff6f00" },
-  ];
-
-    return (
-      <div className="min-h-screen flex flex-col items-center bg-black">
-        {/* Hero Section */}
-        <section className="w-full max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-center gap-8 md:gap-12 px-4 sm:px-6 pt-16 md:pt-20 pb-10 min-h-[420px]">
-          {/* Text & Socials */}
-          <div className="flex-1 flex flex-col justify-center items-center md:items-start min-w-[280px] md:min-w-[320px] md:ml-16">
-            <h1 className="font-extrabold text-white tracking-tight leading-tight text-[clamp(2.2rem,8vw,4.5rem)] md:text-[clamp(2.8rem,6vw,4.5rem)] mb-4 md:mb-5 text-center md:text-left">
-              Swapnil Shukla
-            </h1>
-            <p className="text-[15px] sm:text-[17px] md:text-lg text-purple-200/95 max-w-2xl leading-relaxed mb-6 text-center md:text-left px-2 md:px-0">
-               Web Developer | Data Analytics Enthusiast
-            </p>
-            <nav aria-label="Social links" className="flex gap-3 md:gap-4 mt-2">
-              {socials.map((s, i) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target={s.href.startsWith('http') ? "_blank" : undefined}
-                  rel={s.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                  download={s.download ? '' : undefined}
-                  className="social-icon transform hover:scale-110 active:scale-95 transition-transform duration-200"
-                  style={{ ['--brand-color']: s.color }}
-                  title={s.label}
-                  aria-label={s.label}
-                >
-                  <Image src={s.icon} alt={s.label} width={24} height={24} className="md:w-[26px] md:h-[26px]" />
-                </a>
-              ))}
-            </nav>
+export default function Home() {
+  return (
+    <>
+      <header className="top" id="top">
+        <div className="wrap">
+          <a className="mark" href="#home" aria-label="Swapnil Shukla, back to top">Swapnil Shukla</a>
+          <nav id="nav">
+            <span className="ind" id="ind"></span>
+            <a href="#work" data-s="work">Work</a>
+            <a href="#experience" data-s="experience">Experience</a>
+            <a href="#about" data-s="about">About</a>
+            <a href="#contact" data-s="contact">Contact</a>
+          </nav>
+          <div className="tools">
+            <span className="clock" id="clock">IST</span>
+            <button className="ic" id="kbtn" aria-label="Open command menu"><kbd>⌘K</kbd></button>
+            <button className="ic" id="theme" aria-label="Toggle theme">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></svg>
+            </button>
           </div>
-          {/* Avatar Flip */}
-          <div className="flex-1 flex items-center justify-center mt-6 md:mt-0">
-            <div
-              className="avatar-flip group w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-[360px] md:h-[360px] md:ml-20"
-              style={{ perspective: '1200px' }}
-              tabIndex={0}
-              aria-label="Swapnil Shukla Avatar"
-            >
-              <div
-                className="flip-inner group-hover:rotate-y-180 focus:rotate-y-180 w-full h-full relative"
-                style={{
-                  transformStyle: 'preserve-3d',
-                  transition: 'transform 0.6s',
-                }}
-              >
-                <div
-                  className="flip-front absolute inset-0 w-full h-full"
-                  style={{ backfaceVisibility: 'hidden' }}
-                >
-                  <Image
-                    src={avatarUrl}                                  // CHANGED
-                    alt="Swapnil Shukla"
-                    width={360}
-                    height={360}
-                    className="w-full h-full rounded-full border-4 md:border-[6px] border-purple-500/90 shadow-2xl object-cover"
-                    priority
-                  />
-                </div>
-                <div
-                  className="flip-back absolute inset-0 w-full h-full rounded-full border-4 md:border-[6px] border-purple-500/90 shadow-2xl flex items-center justify-center text-black text-lg md:text-xl font-semibold text-center px-4 md:px-6 bg-gradient-to-br from-purple-200 to-white"
-                  style={{
-                    backfaceVisibility: 'hidden',
-                    transform: 'rotateY(180deg)',
-                  }}
-                >
-                  Web Developer &amp; Data Analyst
-                </div>
-              </div>
-            </div>
+        </div>
+        <div className="prog" id="prog"></div>
+      </header>
+
+      <main id="home">
+        {/* HERO */}
+        <section className="hero wrap">
+          <div className="status rv"><b></b>Forward deployed engineer at UnifyApps</div>
+          <h1 className="hl">
+            <span className="nm split">Swapnil Shukla.</span>
+            <br />
+            <span className="ty" id="ty">
+              <span className="typed" id="typed">I build AI that enterprise teams actually use.</span>
+              <span className="tcaret" aria-hidden="true"></span>
+              <span className="ghost" id="ghost" aria-hidden="true"></span>
+            </span>
+          </h1>
+          <p className="bio rv">
+            I work with enterprise clients in the UAE, taking their messy, manual workflows and turning them into AI pipelines that run in production. On the side I made <a href="#work">Murmur</a>, offline push-to-talk dictation for Mac and Windows. Recently graduated from DA-IICT (B.Tech ICT).
+          </p>
+          <div className="links rv">
+            <a className="btn primary" href="#contact">Get in touch</a>
+            <a className="btn" href={GITHUB} {...ext}>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" /></svg>
+              GitHub
+            </a>
+            <a className="btn" href={LINKEDIN} {...ext}>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" /></svg>
+              LinkedIn
+            </a>
+            <a className="btn" href={RESUME} {...ext} aria-label="Resume (opens in a new tab)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" /></svg>
+              Resume
+            </a>
           </div>
         </section>
 
-      {/* Skills carousel */}
-      <SkillsCarousel />
+        {/* WORK */}
+        <section className="wide" id="work">
+          <div className="wrap label rv"><span>Selected work</span><span>2024 — now</span></div>
 
-      {/* Projects section */}
-      <section className="w-full max-w-7xl px-4 sm:px-6 pb-32 md:pb-40">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 md:mb-6 text-center shine-gradient">Featured Projects</h2>
-        <p className="text-purple-200/80 max-w-2xl mx-auto text-center mb-16 md:mb-24 text-sm sm:text-base leading-relaxed px-2 md:px-0">A selection of products, platforms, and analytical dashboards I&apos;ve crafted with focus on performance, usability, and clarity.</p>
+          <article className="feature rv">
+            <div className="stage" id="murmurStage">
+              <div className="desk"></div>
+              <div className="win" aria-hidden="true">
+                <div className="bar"><i></i><i></i><i></i><span>Notes — standup.md</span></div>
+                <div className="doc">
+                  <span id="mtext">Shipped the invoice parser for the Dubai client. Next up is retries on the OCR step, then a demo on Thursday.</span>
+                  <span className="caret"></span>
+                </div>
+              </div>
+              <button className="pill" id="pill" data-phase="idle" aria-label="Hold to try the Murmur dictation demo">
+                <span className="idle"></span>
+                <span className="hint">hold to talk</span>
+                <span className="pcard" aria-hidden="true">
+                  <canvas className="orb" id="orb" width="132" height="84"></canvas>
+                  <svg className="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#3DFF8F" /><path d="M7 12.4l3.2 3.1L17 8.8" fill="none" stroke="#0B0F0D" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  <span className="lbl" id="pillTxt">Listening</span>
+                  <span className="ptx"><span id="ptx"></span></span>
+                </span>
+              </button>
+            </div>
+            <div className="body">
+              <div className="row"><h3>Murmur</h3><span className="meta">macOS · Windows · 2026</span></div>
+              <p>Push-to-talk dictation that runs entirely on your machine. Hold a key, speak, and clean text lands in whatever app you&apos;re in. The speech model runs locally, so nothing you say ever leaves the laptop.</p>
+              <div className="stats">
+                <div><b>0</b><span>servers</span></div>
+                <div><b>0</b><span>accounts</span></div>
+                <div><b>0</b><span>recordings kept</span></div>
+              </div>
+              <div className="row">
+                <Tags items={["on-device ASR", "native hotkeys", "cross-platform"]} />
+                <a className="more" href="https://murmur-talk.vercel.app" {...ext}>murmur-talk.vercel.app <span className="arr">↗</span></a>
+              </div>
+            </div>
+          </article>
 
-        {/* Mobile / small screens improved styling */}
-        <div className="lg:hidden space-y-12 md:space-y-20">
-          {mainProjects.map((proj, i) => (
-            <div key={i} className="relative bg-black/60 md:bg-black/50 gradient-border backdrop-blur-2xl rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 border border-white/20 md:border-white/10 shadow-xl hover:shadow-2xl hover:border-purple-500/30 transition-all duration-300">
-              <div className="flex flex-col gap-6 md:gap-10">
-                {proj.image && (
-                  proj.name === 'HabitQuest' ? (
-                    <div className="relative flex items-center justify-center p-4 md:p-6 bg-white/5 rounded-xl md:rounded-2xl">
-                      <Image src={proj.image} alt={proj.name} width={180} height={180} className="sm:w-[200px] sm:h-[200px] md:w-[220px] md:h-[220px] object-contain" unoptimized />
-                    </div>
-                  ) : (
-                    <div className="relative overflow-hidden rounded-xl md:rounded-2xl shadow-xl md:shadow-2xl group">
-                      <Image 
-                        src={proj.image} 
-                        alt={proj.name} 
-                        width={800} 
-                        height={480} 
-                        className="w-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                        style={{height: '240px', ['@media (minWidth: 640px)']: { height: '280px' }, ['@media (minWidth: 768px)']: { height: '340px' }}} 
-                        unoptimized 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                  )
-                )}
-                <div className="space-y-4 md:space-y-0">
-                  <a href={proj.link} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center md:justify-start gap-2 md:gap-3 mb-3 md:mb-5 group">
-                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent group-hover:from-purple-200 group-hover:to-white transition-all duration-300 text-center md:text-left">{proj.name}</h3>
-                    {!proj.name.includes('Dashboard') && (
-                      <span className="pulse-ring inline-flex w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-green-400" title="Live Project" />
-                    )}
-                  </a>
-                  <p className="text-purple-100/90 mb-4 md:mb-6 leading-relaxed text-sm sm:text-base text-center md:text-left">{proj.description}</p>
-                  <div className="flex flex-wrap gap-1.5 md:gap-2 justify-center md:justify-start">
-                    {proj.tech.map((tech,j)=>(
-                      <span key={j} className="bg-purple-900/50 md:bg-purple-900/40 backdrop-blur px-2.5 md:px-3 py-1 md:py-1.5 rounded-md md:rounded-lg text-xs border border-purple-700/50 md:border-purple-700/40 hover:bg-purple-800/60 hover:border-purple-600/50 transition-all duration-200">{tech}</span>
+          <div className="grid">
+            <a className="card rv" href={FINORA} {...ext}>
+              <div className="viz">
+                <div className="fin" aria-hidden="true">
+                  <div className="k">This month<b>₹ 42,380</b></div>
+                  <div className="bars">
+                    {[40, 62, 48, 80, 55, 92, 60].map((h, i) => (
+                      <i key={i} className={i === 5 ? "h" : undefined} style={{ height: `${h}%` }}></i>
                     ))}
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+              <div className="txt">
+                <div className="row"><h3>Finora</h3><span className="yr">2025</span></div>
+                <p>Personal finance app. Snap a receipt and Gemini turns it into a transaction. Auth, rate limiting and background jobs done properly.</p>
+                <Tags items={["Next.js", "Prisma", "Supabase", "Clerk", "Inngest"]} />
+              </div>
+            </a>
 
-        {/* Large screen smooth piling animation */}
-        <div className="hidden lg:block">
-          <ProjectStack projects={mainProjects} />
+            <a className="card rv" href={SKYLYNX} {...ext}>
+              <div className="viz">
+                <div className="sky" aria-hidden="true">
+                  <div className="rt">
+                    <span><b>BOM</b>Mumbai</span>
+                    <svg viewBox="0 0 120 40"><path className="arc" d="M6 34 Q60 -6 114 34" /><circle className="pl" r="3.2"><animateMotion dur="3.2s" repeatCount="indefinite" path="M6 34 Q60 -6 114 34" /></circle></svg>
+                    <span className="r"><b>DXB</b>Dubai</span>
+                  </div>
+                  <div className="mt"><span>SL 204</span><span>3h 05m</span><span>Seat 14A</span></div>
+                </div>
+              </div>
+              <div className="txt">
+                <div className="row"><h3>Skylynx</h3><span className="yr">web app</span></div>
+                <p>Flight booking, end to end: search a route, pick a seat, confirm. Tested against 1,000+ mock reservations, with a lean Express API behind a responsive React front end.</p>
+                <Tags items={["React", "Node.js", "Express", "MongoDB", "Tailwind"]} />
+              </div>
+            </a>
+
+            <a className="card rv" href={SKETCHPAD} {...ext}>
+              <div className="viz">
+                <svg className="sk" viewBox="0 0 240 130" aria-hidden="true">
+                  <g className="ink">
+                    <path pathLength="1" style={{ "--d": "0s" }} d="M26 38 C50 35 74 34 98 36 C99 52 98 70 99 88 C76 90 50 89 28 90 C27 72 27 55 26 38" />
+                    <path pathLength="1" style={{ "--d": ".08s" }} d="M29 35 C54 37 76 36 96 39 C96 56 97 72 96 91 C72 87 48 92 25 87 C26 70 28 52 29 35" />
+                    <path pathLength="1" style={{ "--d": ".5s" }} d="M40 54 C48 50 54 58 62 53 S76 52 84 55" />
+                    <path pathLength="1" style={{ "--d": ".62s" }} d="M40 70 C50 67 58 73 70 69" />
+                  </g>
+                  <g className="arr">
+                    <path pathLength="1" style={{ "--d": ".8s" }} d="M106 63 C120 55 132 70 146 61" />
+                    <path pathLength="1" style={{ "--d": "1.05s" }} d="M137 54 L147 61 L138 68" />
+                  </g>
+                  <g className="acc">
+                    <ellipse pathLength="1" style={{ "--d": "1.15s" }} cx="186" cy="62" rx="34" ry="25" transform="rotate(-4 186 62)" />
+                    <ellipse pathLength="1" style={{ "--d": "1.25s" }} cx="187" cy="61" rx="32" ry="27" transform="rotate(5 187 61)" />
+                    <path pathLength="1" style={{ "--d": "1.6s" }} d="M172 63 L182 72 L201 51" />
+                  </g>
+                </svg>
+              </div>
+              <div className="txt">
+                <div className="row"><h3>Sketchpad</h3><span className="yr">2026</span></div>
+                <p>A whiteboard where everything looks hand-drawn. Infinite canvas, autosave with Supabase sync, and an AI panel that sketches a first draft of a diagram from one sentence, using your own key.</p>
+                <Tags items={["React", "roughjs", "Supabase", "BYOK AI"]} />
+              </div>
+            </a>
+
+            <a className="card rv" href={HABITQUEST} {...ext}>
+              <div className="viz">
+                <div className="hq" aria-hidden="true">
+                  <div className="lv"><b>Lv 7</b><span className="xp"><i></i></span><em>640 xp</em></div>
+                  <ul>
+                    <li className="done"><s></s>Read 20 min<span>12d</span></li>
+                    <li className="done"><s></s>Morning run<span>5d</span></li>
+                    <li className="tick"><s></s>No phone after 11<span>2d</span></li>
+                  </ul>
+                </div>
+              </div>
+              <div className="txt">
+                <div className="row"><h3>HabitQuest</h3><span className="yr">prototype</span></div>
+                <p>A habit tracker that plays like a game, with streaks, XP and levels for the habits you keep. Designed end to end as a high-fidelity Figma prototype.</p>
+                <Tags items={["UI/UX", "Figma", "Prototyping"]} />
+              </div>
+            </a>
+          </div>
+        </section>
+
+        {/* EXPERIENCE */}
+        <section className="wrap" id="experience">
+          <div className="label rv"><span>Experience</span></div>
+          <div className="exp">
+            {experience.map(([d, org, role, now]) => (
+              <div className="r rv" key={org + d}>
+                <span className="d">{d}</span>
+                <span className="t"><b>{org}</b><span>{role}</span></span>
+                {now ? <span className="now">now</span> : <span></span>}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ABOUT */}
+        <section className="wrap" id="about">
+          <div className="label rv"><span>About</span></div>
+          <div className="about">
+            <p className="rv">I grew up in Doha and went to school at DPS-MIS, then moved to India for engineering. I like the part of the job where you sit with the people who&apos;ll use the thing, find out what&apos;s actually slow, and fix that.</p>
+            <p className="rv">Outside work: sport, and a gold in the English Olympiad that I still bring up more than I should.</p>
+            <dl className="stack rv">
+              {stack.map(([k, v]) => [
+                <dt key={k + "t"}>{k}</dt>,
+                <dd key={k + "d"}>
+                  {v.split(", ").map((s, i) => (
+                    <span key={s} style={{ transitionDelay: `${150 + i * 60}ms` }}>{s}</span>
+                  ))}
+                </dd>,
+              ])}
+            </dl>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section className="wrap contact" id="contact">
+          <div className="label rv"><span>Contact</span></div>
+          <h2 className="rv">Building something with AI that has to work in the real world? <span>Let&apos;s talk.</span></h2>
+          <div className="rv">
+            <a className="mail" href={`mailto:${EMAIL}`}>{EMAIL} <span className="arr">↗</span></a>
+            <button className="copy" id="copy">copy</button>
+          </div>
+          <div className="or rv"><span>or leave a note here</span></div>
+          <ContactForm email={EMAIL} />
+          <SandWordmark text="Swapnil Shukla" />
+        </section>
+      </main>
+
+      <footer>
+        <div className="wrap">
+          <span>© 2026 Swapnil Shukla</span>
+          <span>
+            <a href={GITHUB} {...ext}>GitHub</a> · <a href={LINKEDIN} {...ext}>LinkedIn</a> · <a href="#home">Top ↑</a>
+          </span>
         </div>
-      </section>
-      {/* CONTACT SECTION */}
-      <section id="contact" className="w-full max-w-5xl mx-auto px-4 sm:px-6 pb-32 md:pb-40">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 text-center shine-gradient">Contact Me</h2>
-        <p className="text-purple-200/80 max-w-2xl mx-auto text-center mb-10 text-sm sm:text-base leading-relaxed">
-          Send a direct message.
-        </p>
-        <div className="relative bg-black/60 gradient-border backdrop-blur-2xl rounded-2xl p-6 sm:p-10 border border-white/10 shadow-xl">
-          <ContactForm />
-          <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-purple-500/10" />
+      </footer>
+
+      <div className="cmd" id="cmd" role="dialog" aria-modal="true" aria-label="Command menu">
+        <div className="box">
+          <input id="cq" placeholder="Jump to…" autoComplete="off" aria-label="Search commands" />
+          <ul id="cl"></ul>
+          <div className="foot"><span>↑↓ move</span><span>↵ open</span><span>esc close</span></div>
         </div>
-      </section>
-    </div>
+      </div>
+      <div className="toast" id="toast"></div>
+
+      <Interactions />
+    </>
   );
 }
