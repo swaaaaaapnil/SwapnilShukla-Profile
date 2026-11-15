@@ -1,106 +1,98 @@
 "use client";
-import { useState } from "react";
 
-export default function ContactForm() {
-  const [status, setStatus] = useState("idle");
-  const [error, setError] = useState("");
+import { useEffect, useRef, useState } from "react";
 
-  const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/meolvwdg";
+// Posts to Formspree, which forwards each note to the inbox. The endpoint can be overridden
+// with NEXT_PUBLIC_FORMSPREE_ENDPOINT; the fallback is the form the site has always used.
+const ENDPOINT = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || "https://formspree.io/f/meolvwdg";
+const BASE_HINT = "Goes straight to my inbox. I usually reply within a day.";
 
-  async function handleSubmit(e) {
+export default function ContactForm({ email }) {
+  const formRef = useRef(null);
+  const resetTimer = useRef(null);
+  const [status, setStatus] = useState("idle"); // idle | sending | sent | error | invalid
+  const [hint, setHint] = useState(BASE_HINT);
+  const [bad, setBad] = useState({});
+
+  useEffect(() => () => clearTimeout(resetTimer.current), []);
+
+  const check = (el) => {
+    const ok = el.checkValidity();
+    setBad((b) => (b[el.name] === !ok ? b : { ...b, [el.name]: !ok }));
+    return ok;
+  };
+  const onBlur = (e) => { if (e.target.value) check(e.target); };
+  const onInput = (e) => { if (bad[e.target.name]) check(e.target); };
+  const onKeyDown = (e) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); formRef.current.requestSubmit(); }
+  };
+
+  async function onSubmit(e) {
     e.preventDefault();
-    setStatus("sending");
-    setError("");
-
-    if (!endpoint.startsWith("https://formspree.io/f/")) {
-      setError("Form endpoint missing.");
-      setStatus("error");
+    const f = formRef.current;
+    const invalid = [...f.querySelectorAll("[required]")].filter((el) => !check(el));
+    if (invalid.length) {
+      invalid[0].focus();
+      setStatus("invalid");
+      setHint(invalid[0].type === "email" ? "That email doesn't look right." : "Add a short message first.");
       return;
     }
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
+    setStatus("sending"); setHint("Sending…");
     try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: formData
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || "Failed.");
-      setStatus("success");
-      form.reset();
-      setTimeout(() => setStatus("idle"), 4000);
-    } catch (err) {
-      setError(err.message || "Error");
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 5000);
+      const r = await fetch(ENDPOINT, { method: "POST", body: new FormData(f), headers: { Accept: "application/json" } });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error((d.errors && d.errors.map((x) => x.message).join(", ")) || "Send failed");
+      f.reset(); setBad({});
+      setStatus("sent"); setHint("Got it, thanks. I'll get back to you soon.");
+      resetTimer.current = setTimeout(() => { setStatus("idle"); setHint(BASE_HINT); }, 6000);
+    } catch {
+      setStatus("error"); setHint(null);
     }
   }
 
+  const label = { sending: "Sending…", sent: "Sent", error: "Try again" }[status] || "Send message";
+  const err = status === "error" || status === "invalid";
+  const cls = ["note", status === "sending" && "sending", status === "sent" && "sent"].filter(Boolean).join(" ");
+  const field = (name) => "f" + (bad[name] ? " bad" : "");
+
+  // the reveal class lives on a wrapper: React re-renders the form class, which would drop "in"
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
-      {/* Honeypot */}
-      <input type="text" name="company" className="hidden" tabIndex={-1} autoComplete="off" />
-
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-purple-200">
-          Your Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          className="w-full rounded-lg bg-black/40 border border-purple-600/40 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/40 outline-none px-4 py-3 text-sm text-white"
-          placeholder="recruiter@example.com"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="phone" className="text-sm font-medium text-purple-200">
-          Phone / WhatsApp (optional)
-        </label>
-        <input
-          id="phone"
-            name="phone"
-            type="text"
-            className="w-full rounded-lg bg-black/40 border border-purple-600/40 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/40 outline-none px-4 py-3 text-sm text-white"
-            placeholder="+91XXXXXXXXXX"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="message" className="text-sm font-medium text-purple-200">Message</label>
-        <textarea
-          id="message"
-          name="message"
-          rows={6}
-          required
-          className="w-full rounded-lg bg-black/40 border border-purple-600/40 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/40 outline-none px-4 py-3 text-sm text-white resize-y"
-          placeholder="Write your message..."
-        />
-      </div>
-
-      {/* Optional subject / metadata */}
+    <div className="rv">
+    <form className={cls} id="note" ref={formRef} action={ENDPOINT} method="POST" noValidate onSubmit={onSubmit} onKeyDown={onKeyDown}>
       <input type="hidden" name="_subject" value="Portfolio Contact" />
-      <input type="hidden" name="_gotcha" style={{ display: "none" }} />
-
-      <div className="flex items-center gap-4">
-        <button
-          disabled={status === "sending"}
-          className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-semibold text-sm shadow-lg cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {status === "sending" ? "Sending..." : "Send Message"}
-        </button>
-        {status === "success" && <span className="text-green-400 text-sm">Sent.</span>}
-        {status === "error" && <span className="text-red-400 text-sm">{error}</span>}
+      <input type="text" name="_gotcha" className="hp" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <div className="two">
+        <label className={field("email")}>
+          <span>Your email</span>
+          <input type="email" name="email" required autoComplete="email" placeholder="you@company.com" onBlur={onBlur} onInput={onInput} />
+        </label>
+        <label className="f">
+          <span>Phone / WhatsApp <em>optional</em></span>
+          <input type="tel" name="phone" autoComplete="tel" placeholder="+91 98765 43210" />
+        </label>
       </div>
-
-      <p className="text-xs text-purple-300/50">
-        Have a role, idea, or challenge? Drop it here—I'll reply fast.
-      </p>
+      <label className={field("message")}>
+        <span>Message</span>
+        <textarea name="message" required rows={4} maxLength={2000} placeholder="A role, an idea, a messy workflow you want automated…" onBlur={onBlur} onInput={onInput} />
+      </label>
+      <div className="foot">
+        <p className={"hint" + (err ? " err" : "")} aria-live="polite">
+          <i className="dot"></i>
+          <span>
+            {status === "error" ? (
+              <>Couldn&apos;t send just now. <a href={`mailto:${email}`}>Email me directly</a> instead.</>
+            ) : (
+              hint
+            )}
+          </span>
+        </p>
+        <button className="btn primary send" type="submit" disabled={status === "sending" || status === "sent"}>
+          <span className="lbl">{label}</span>
+          <kbd>⌘↵</kbd>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+        </button>
+      </div>
     </form>
+    </div>
   );
 }
