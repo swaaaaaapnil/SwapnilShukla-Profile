@@ -1,20 +1,12 @@
-'use client';
-
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">404</h1>
-        <p className="text-xl">Page not found</p>
-        <Link 
-          href="/"
-          className="inline-block px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white hover:opacity-90 transition-opacity"
-        >
-          Return Home
-        </Link>
-      </div>
-    </div>
+    <main className="wrap" style={{ minHeight: "100svh", display: "grid", placeContent: "center", gap: 16, textAlign: "center" }}>
+      <p style={{ font: "500 13px var(--mono)", color: "var(--muted)" }}>404</p>
+      <h1 style={{ fontSize: "clamp(32px,6vw,56px)", letterSpacing: "-.04em", lineHeight: 1 }}>Page not found</h1>
+      <p style={{ color: "var(--muted)" }}>The link may be old, or the page has moved.</p>
+      <div><Link className="btn primary" href="/">Back home</Link></div>
+    </main>
   );
 }

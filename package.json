@@ -9,19 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "15.5.9",
     "@vercel/analytics": "^2.0.1",
-    "next": "15.5.2",
+    "next": "15.5.9",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "resend": "^6.0.2",
-    "twilio": "^5.9.0"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "15.5.2",
-    "tailwindcss": "^4"
+    "eslint-config-next": "15.5.2"
   }
 }
