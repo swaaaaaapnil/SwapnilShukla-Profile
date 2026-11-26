@@ -5,7 +5,7 @@ import ContactForm from "./components/ContactForm";
 const EMAIL = "swapnilshukla470@gmail.com";
 const GITHUB = "https://github.com/swaaaaaapnil";
 const LINKEDIN = "https://www.linkedin.com/in/swapnil--shukla/";
-const RESUME = "https://drive.google.com/file/d/1ix_odvRK7bSzrxeje-gBusr-4nX6MA3d/view?usp=sharing";
+const RESUME = "https://drive.google.com/file/d/1z7hzXG-fxlhm2wcJCLnWl5eXNXQ9IDn_/view?usp=sharing";
 const FINORA = "https://finora-phi.vercel.app";
 const SKYLYNX = "https://skylynx.vercel.app";
 const SKETCHPAD = "https://sketchpad-blond.vercel.app";
